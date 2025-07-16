@@ -1241,7 +1241,6 @@ MonoBehaviour:
   thoiGianNhay: 0.27
   lucNhayToiDa: 9
   gemsToExtraLife: 10
-  winText: {fileID: 0}
 --- !u!50 &195314275
 Rigidbody2D:
   serializedVersion: 5

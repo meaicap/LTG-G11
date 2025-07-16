@@ -1,9 +1,5 @@
 ﻿using System.Collections;
-/*using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.U2D.Animation;*/
 using UnityEngine;
-/*using UnityEngine.Pool;*/
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -32,14 +28,8 @@ public class DiChuyenNhanVat : MonoBehaviour
 
     // Các biến liên quan đến mạng sống và gem
     public int gemsToExtraLife = 10;
-    
 
     healthManager m_healthBar;
-
-
-    [SerializeField] private Text winText;
-
-    
 
     void Start()
     {
@@ -48,11 +38,21 @@ public class DiChuyenNhanVat : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        GameManager.Instance.ResetGameData();
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetGameData();
+        }
+        else
+        {
+            Debug.LogError("GameManager.Instance is null!");
+        }
 
         m_healthBar = FindObjectOfType<healthManager>();
+        if (m_healthBar == null)
+        {
+            Debug.LogError("healthManager not found in scene!");
+        }
     }
-
 
     void Update()
     {
@@ -60,7 +60,7 @@ public class DiChuyenNhanVat : MonoBehaviour
         rb.linearVelocity = new Vector2(traiPhai * tocdo, rb.linearVelocity.y);
         flip();
         animator.SetFloat("move", Mathf.Abs(traiPhai));
-    
+
         // Xử lý nhảy
         if ((Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Space)) && duocPhepNhay)
         {
@@ -75,7 +75,7 @@ public class DiChuyenNhanVat : MonoBehaviour
                 float lucNhay = Mathf.Clamp(lucNhayToiDa * (Time.time - thoiGianGiunPhimNhay) / thoiGianNhay, 0f, lucNhayToiDa);
                 rb.AddForce(Vector2.up * lucNhay, ForceMode2D.Impulse);
                 dangGiunPhimNhay = false;
-                AudioManager.Instance.PlaySFX("Jump");
+                AudioManager.Instance?.PlaySFX("Jump"); // An toàn với null
             }
         }
 
@@ -91,7 +91,7 @@ public class DiChuyenNhanVat : MonoBehaviour
             spriteRenderer.enabled = true;
         }
     }
-    
+
     void flip()
     {
         if (isfacingRight && traiPhai < 0 || !isfacingRight && traiPhai > 0)
@@ -114,7 +114,7 @@ public class DiChuyenNhanVat : MonoBehaviour
             if (contactPointY > enemyTopY - 0.1944841f)
             {
                 KillEnemy(collision.gameObject);
-                AudioManager.Instance.PlaySFX("Kill");
+                AudioManager.Instance?.PlaySFX("Kill");
             }
             else if (!CanTakeDamage())
             {
@@ -126,20 +126,20 @@ public class DiChuyenNhanVat : MonoBehaviour
                 GameManager.Instance.ResetGemCount();
                 SetImmune(true);
                 StartCoroutine(ImmuneDuration());
-                m_healthBar.takeDamage(25);
+                m_healthBar?.takeDamage(25); // An toàn với null
             }
             else
             {
                 SetImmune(true);
                 StartCoroutine(ImmuneDuration());
-                m_healthBar.takeDamage(25);
+                m_healthBar?.takeDamage(25); // An toàn với null
             }
         }
     }
 
     private void KillEnemy(GameObject enemy)
     {
-        enemy.GetComponent<diChuyenQuai>().Die();
+        enemy.GetComponent<diChuyenQuai>()?.Die(); // An toàn với null
     }
 
     public void Die()
@@ -160,17 +160,16 @@ public class DiChuyenNhanVat : MonoBehaviour
         else
         {
             ResetGame();
-            AudioManager.Instance.PlaySFX("Death");
+            AudioManager.Instance?.PlaySFX("Death"); // An toàn với null
             m_healthBar.healthAmount = 100f;
             m_healthBar.healthBar.fillAmount = 1f;
             GameManager.Instance.ResetGemCount();
-        }   
+        }
     }
 
     private void DropGems()
     {
         GameManager.Instance.ResetGemCount(); // Khi va chạm với quái, gem sẽ biến mất
-
         // TODO: Có thể thực hiện hành động nào đó sau khi gem biến mất (nếu cần)
     }
 
@@ -190,7 +189,7 @@ public class DiChuyenNhanVat : MonoBehaviour
         immuneToDamage = immune;
         lastHitTime = Time.time;
     }
-   
+
     private void OnTriggerEnter2D(Collider2D hitboxkhac)
     {
         switch (hitboxkhac.gameObject.tag)
@@ -200,7 +199,7 @@ public class DiChuyenNhanVat : MonoBehaviour
                 break;
             case "Gem":
                 GameManager.Instance.AddGem();
-                AudioManager.Instance.PlaySFX("Collect");
+                AudioManager.Instance?.PlaySFX("Collect");
 
                 if (GameManager.Instance.CollectedGems >= gemsToExtraLife)
                 {
@@ -217,6 +216,7 @@ public class DiChuyenNhanVat : MonoBehaviour
                 break;
         }
     }
+
     private void OnTriggerExit2D(Collider2D hitboxkhac)
     {
         if (hitboxkhac.gameObject.tag == "matDat")
@@ -224,11 +224,10 @@ public class DiChuyenNhanVat : MonoBehaviour
             duocPhepNhay = false;
         }
     }
+
     private void ResetGame()
     {
         // TODO: Thực hiện các hành động cần thiết để reset trạng thái trò chơi
-        // Ví dụ: Reset vị trí của nhân vật, số mạng, số gem đã nhặt, v.v.
-        // Reset vị trí nhân vật
         Vector3 startingPosition = new Vector3(-12.002f, 0.766f, -0.315f); // Điều chỉnh vị trí ban đầu tùy theo yêu cầu
         transform.position = startingPosition;
         if (m_healthBar != null)
@@ -237,6 +236,5 @@ public class DiChuyenNhanVat : MonoBehaviour
             m_healthBar.healthBar.fillAmount = 1f;
         }
         GameManager.Instance.ResetGameData();
-        
     }
 }
