@@ -3,7 +3,8 @@
 
 # Báo cáo tiểu luận 
 
-![LogoKhoa](https://github.com/meaicap/LTG-G11.git)
+![LogoKhoa](https://github.com/user-attachments/assets/a41f75e9-98de-4dc9-8738-844b3f6491ac)
+
 
 
 ## **Nhóm 11 **
