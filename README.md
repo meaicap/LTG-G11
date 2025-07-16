@@ -49,7 +49,7 @@ Báo cáo này trình bày chi tiết quá trình phát triển "High Jump Adven
 ---
 
 
-### **6. Chức năng đã xây dựng được **
+### **5. Chức năng đã xây dựng được **
 Quản lý game Menu (Start, Game Over, Quit): Điều hướng chính, hiển thị menu chính khi khởi động, Game Over khi thua, sử dụng UI của Unity.
 Điều khiển nhân vật (Run, Jump, Attack): Cho phép di chuyển trái/phải, nhảy (giữ lâu để nhảy cao hơn), tấn công quái vật bằng cách nhảy lên đầu. Lập trình bằng Rigidbody2D, Animator, sự kiện đầu vào Unity.
 Quản lý các vật cản (Take Damage, Move, Attack): Lập trình hành vi riêng cho chướng ngại vật và kẻ địch. Xử lý sự kiện "Take Damage" (mất kim cương hoặc mất mạng). Sử dụng Collider2D và script AI đơn giản.
